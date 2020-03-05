@@ -35,6 +35,8 @@ pipeline {
     stages {
         stage('Build'){
             steps {
+	        echo "current path: ${PWD}"
+	        bat "printenv"
                 bat "${cmd} build"
             }
         }
