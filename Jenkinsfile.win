@@ -20,23 +20,50 @@
 
 pipeline {
     agent any 
-
+    
+    environment {
+		// currentDir can be set to specific dir for non github testing 
+		currentDir = "."
+		artifactoryServerName = "artifactory"
+		artifactoryFileSpecName = "${env.JOB_NAME}.${env.BUILD_NUMBER}.filespec.json"
+		artifactoryUploadFileSpecName = "upload.${artifactoryFileSpecName}"
+		artifactoryDownloadFileSpecName = "download.${artifactoryFileSpecName}"		
+		fbrType = "artifactory"
+		cmd = "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} -Dconfig.build.fbr.type=${fbrType}"
+	}
+	
     stages {
         stage('Build'){
             steps {
-                bat "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} build"
+                bat "${cmd} build"
             }
         }
         stage('Deploy') {
             steps {
-		bat "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} deploy"
+		bat "${cmd} deploy"
             }
         }
  	stage('Test') {
             steps {
-		bat "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} test"
+		bat "${cmd} test"
 		junit 'report/'
             }
         }
+	stage('Publish') {
+			steps {
+				echo "Publish stage"
+				bat "${cmd} -Dbda.artifactoryFileSpecName=${artifactoryUploadFileSpecName} prepareArtifactoryUploadSpec"
+				script {
+					def server = Artifactory.server "${artifactoryServerName}"
+					def uploadSpec = readFile "${artifactoryUploadFileSpecName}"
+					def buildInfo = Artifactory.newBuildInfo()
+					buildInfo.env.capture = true
+					buildInfo.env.collect()
+					// Upload to Artifactory.
+					server.upload spec: uploadSpec, buildInfo: buildInfo
+					server.publishBuildInfo buildInfo
+				}
+			}
+		}
     }
 }
