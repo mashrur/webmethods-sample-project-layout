@@ -57,10 +57,18 @@ pipeline {
 	stage('Publish') {
 			steps {
 				echo "Publish stage"
-				bat "${cmd} -Dbda.artifactoryFileSpecName=${artifactoryUploadFileSpecName} prepareArtifactoryUploadSpec"
 				script {
+				        def uploadSpec = """{
+                                         "files": [
+                                            {
+                                              "pattern": "(.*).zip",
+                                              "target": "libs-release-local/${env.JOB_NAME}/${env.BUILD_NUMBER}/",
+                                              "props" : { 'type=zip;status=ready' }
+                                              "regexp": "true"
+                                            }
+                                          ]
+                                        }"""
 					def server = Artifactory.server "${artifactoryServerName}"
-					def uploadSpec = readFile "${artifactoryUploadFileSpecName}"
 					def buildInfo = Artifactory.newBuildInfo()
 					buildInfo.env.capture = true
 					buildInfo.env.collect()
