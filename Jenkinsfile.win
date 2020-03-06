@@ -24,7 +24,7 @@ pipeline {
     environment {
 		// currentDir can be set to specific dir for non github testing 
 		currentDir = "."
-		artifactoryServerName = "artifactory"
+		artifactoryServerName = "admin-artifactory"
 		artifactoryFileSpecName = "${env.JOB_NAME}.${env.BUILD_NUMBER}.filespec.json"
 		artifactoryUploadFileSpecName = "upload.${artifactoryFileSpecName}"
 		artifactoryDownloadFileSpecName = "download.${artifactoryFileSpecName}"		
