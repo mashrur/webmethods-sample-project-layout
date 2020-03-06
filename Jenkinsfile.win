@@ -35,11 +35,11 @@ pipeline {
     stages {
         stage('Build'){
             steps {
-	        script {
+	        /*script {
 		   def workspace = pwd()
                    echo workspace 
 		   env.getEnvironment().each { name, value -> println "Name: $name -> Value $value" }
-		}
+		}*/
 	        bat "${cmd} build"
             }
         }
