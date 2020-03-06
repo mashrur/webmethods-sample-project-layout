@@ -37,7 +37,7 @@ pipeline {
             steps {
 	        script {
 		   def workspace = pwd()
-                   echo ${workspace} 
+                   echo workspace 
 		}
 	        bat "printenv"
                 bat "${cmd} build"
