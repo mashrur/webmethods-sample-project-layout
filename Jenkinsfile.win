@@ -35,7 +35,10 @@ pipeline {
     stages {
         stage('Build'){
             steps {
-	        echo "current path: ${PWD}"
+	        script {
+		   def workspace = pwd()
+                   echo ${workspace} 
+		}
 	        bat "printenv"
                 bat "${cmd} build"
             }
