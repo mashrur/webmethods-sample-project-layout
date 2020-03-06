@@ -63,7 +63,7 @@ pipeline {
                                             {
                                               "pattern": "(.*).zip",
                                               "target": "libs-release-local/${env.JOB_NAME}/${env.BUILD_NUMBER}/",
-                                              "props" : { 'type=zip;status=ready' }
+                                              "props" : "type=zip;status=ready",
                                               "regexp": "true"
                                             }
                                           ]
