@@ -38,9 +38,12 @@ pipeline {
 	        script {
 		   def workspace = pwd()
                    echo workspace 
+		   def printParams() {
+  			env.getEnvironment().each { name, value -> println "Name: $name -> Value $value" }
+		   }
+		   printParams()
 		}
-	        bat "printenv"
-                bat "${cmd} build"
+	        bat "${cmd} build"
             }
         }
         stage('Deploy') {
