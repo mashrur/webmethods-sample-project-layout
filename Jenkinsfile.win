@@ -59,7 +59,7 @@ pipeline {
 				echo "Publish stage"
 				script {
 				        artifactoryZipName = "${env.JOB_NAME}-${env.BUILD_NUMBER}.zip"
-				        zip zipFile: '${artifactoryZipName}'
+				        zip zipFile: "${artifactoryZipName}"
 					echo 'zip file: ${artifactoryZipName}'
 				        def uploadSpec = """{
                                          "files": [
