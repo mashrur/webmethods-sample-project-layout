@@ -58,10 +58,11 @@ pipeline {
 			steps {
 				echo "Publish stage"
 				script {
+				        zip zipFile: '${env.JOB_NAME}-${env.BUILD_NUMBER}.zip'
 				        def uploadSpec = """{
                                          "files": [
                                             {
-                                              "pattern": "(.*).zip",
+                                              "pattern": "${env.JOB_NAME}-${env.BUILD_NUMBER}.zip",
                                               "target": "libs-release-local/${env.JOB_NAME}/${env.BUILD_NUMBER}/",
                                               "regexp": "true"
                                             }
