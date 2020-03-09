@@ -58,12 +58,13 @@ pipeline {
 			steps {
 				echo "Publish stage"
 				script {
-				        zip zipFile: '${env.JOB_NAME}-${env.BUILD_NUMBER}.zip'
-					echo 'zip file: "${env.JOB_NAME}-${env.BUILD_NUMBER}.zip"'
+				        artifactoryZipName = "${env.JOB_NAME}-${env.BUILD_NUMBER}.zip";
+				        zip zipFile: artifactoryZipName
+					echo 'zip file: ${artifactoryZipName}'
 				        def uploadSpec = """{
                                          "files": [
                                             {
-                                              "pattern": "${env.JOB_NAME}-${env.BUILD_NUMBER}.zip",
+                                              "pattern": "${artifactoryZipName}",
                                               "target": "libs-release-local/${env.JOB_NAME}/${env.BUILD_NUMBER}/"
                                             }
                                           ]
